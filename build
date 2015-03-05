@@ -1,0 +1,6 @@
+#!/bin/bash
+
+DEPLOY=B:
+
+# smash pym + embed together
+uglifyjs pym.js embed.src.js > ${DEPLOY}/embed.js
