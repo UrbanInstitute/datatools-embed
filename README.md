@@ -19,7 +19,7 @@
 
 #### After:
 
-```
+```html
 <script src="http://datatools.urban.org/features/embed.js"
         data-viz="bsouthga/child-insurance"></script>
 ```
