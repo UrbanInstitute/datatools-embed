@@ -9,7 +9,7 @@
           data-viz="bsouthga/child-insurance"></script>
 */
 
-;(function() {
+;(function(document, undefined) {
 
 // store window reference
 var win = this;
@@ -107,4 +107,4 @@ function callAjax(url, callback){
     xmlhttp.send();
 }
 
-}).call(this);
+}).call(this, document, undefined);
