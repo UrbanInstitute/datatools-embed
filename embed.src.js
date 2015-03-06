@@ -12,37 +12,63 @@
 
 ;(function() {
 
-// Select this script
-var scripts = document.querySelectorAll(
-  'script[src="http://datatools.urban.org/features/embed.js"]'
-);
+if (!this.pym) {
+  callAjax("http://datatools.urban.org/features/pym.js", function(text) {
+    eval(text);
+    addIframe(pym);
+  });
+} else {
+  addIframe(pym);
+}
 
-// increment global count of urban embeded
-var count = this._URBAN_EMBED_COUNT = (
-  this._URBAN_EMBED_COUNT === undefined ? 0 :
-  this._URBAN_EMBED_COUNT + 1
-);
+function addIframe(pym) {
 
-// get this script tag
-var script = scripts[count];
+  // Select this script
+  var scripts = document.querySelectorAll(
+    'script[src="http://datatools.urban.org/features/embed.js"]'
+  );
 
-// get requested data viz
-var viz = script.getAttribute('data-viz');
+  // increment global count of urban embeded
+  var count = this._URBAN_EMBED_COUNT = (
+    this._URBAN_EMBED_COUNT === undefined ? 0 :
+    this._URBAN_EMBED_COUNT + 1
+  );
 
-// create urban frame node
-var urban_frame = document.createElement('div');
+  // get this script tag
+  var script = scripts[count];
 
-// ad id to urban frame
-urban_frame.id = "urban_frame_" + viz;
+  // get requested data viz
+  var viz = script.getAttribute('data-viz');
 
-// insert div before script
-script.parentNode.insertBefore(urban_frame, script);
+  // create urban frame node
+  var urban_frame = document.createElement('div');
 
-// add pymParent to global object
-this['pymParent_' + urban_frame.id] = new pym.Parent(
-  urban_frame.id,
-  "http://datatools.urban.org/features/" + viz,
-  {}
-);
+  // ad id to urban frame
+  urban_frame.id = "urban_frame_" + viz;
+
+  // insert div before script
+  script.parentNode.insertBefore(urban_frame, script);
+
+  // add pymParent to global object
+  this['pymParent_' + urban_frame.id] = new pym.Parent(
+    urban_frame.id,
+    "http://datatools.urban.org/features/" + viz,
+    {}
+  );
+
+}
+
+function callAjax(url, callback){
+    var xmlhttp;
+    // compatible with IE7+, Firefox, Chrome, Opera, Safari
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function(){
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
+            callback(xmlhttp.responseText);
+        }
+    };
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+}
 
 }).call(this);
