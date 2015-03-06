@@ -36,5 +36,3 @@ _URBAN_EMBED_COUNT
 _URBAN_EMBED_QUEUE
 _URBAN_EMBED_QUEUE_UNLOADING
 ```
-
-Additionally, it currently uses the `DOMContentLoaded` event, which is supported back to IE9
