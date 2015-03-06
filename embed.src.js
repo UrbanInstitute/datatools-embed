@@ -7,7 +7,6 @@
 
   <script src="http://datatools.urban.org/features/embed.js"
           data-viz="bsouthga/child-insurance"></script>
-
 */
 
 ;(function() {
@@ -15,14 +14,45 @@
 // store window reference
 var win = this;
 
-// download pym if not in global namespace
-if (!this.pym) {
-  callAjax("http://datatools.urban.org/features/pym.js", function(text) {
-    eval(text);
-    addIframe.call(win, pym);
-  });
-} else {
-  addIframe.call(win, pym);
+// iframe load queue
+var queue = win._URBAN_EMBED_QUEUE = (
+  win._URBAN_EMBED_QUEUE === undefined ? [] :
+  win._URBAN_EMBED_QUEUE
+);
+
+// add loading function to queue
+queue.push(load);
+
+/*
+  on document ready, recurse through callback queue
+*/
+document.addEventListener("DOMContentLoaded", function() {
+  // check if we've already started loading the graphics
+  var unloading = win._URBAN_EMBED_QUEUE_UNLOADING;
+  // if unloading not yet started, begin
+  if (!unloading) unload();
+  // recursively call functions in callback queue
+  function unload() {
+    var init = queue.pop();
+    if (init !== undefined) init(unload);
+  }
+  // note that unloading has began
+  win._URBAN_EMBED_QUEUE_UNLOADING = true;
+});
+
+
+// load a single viz
+function load(callback) {
+  // download pym if not in global namespace
+  if (typeof pym === 'undefined') {
+    callAjax("http://datatools.urban.org/features/pym.js", function(text) {
+      eval(text);
+      addIframe(pym);
+      callback();
+    });
+  } else {
+    addIframe(pym);
+  }
 }
 
 // add iframe for this visual
@@ -34,9 +64,9 @@ function addIframe(pym) {
   );
 
   // increment global count of urban embeded
-  var count = this._URBAN_EMBED_COUNT = (
-    this._URBAN_EMBED_COUNT === undefined ? 0 :
-    this._URBAN_EMBED_COUNT + 1
+  var count = win._URBAN_EMBED_COUNT = (
+    win._URBAN_EMBED_COUNT === undefined ? 0 :
+    win._URBAN_EMBED_COUNT + 1
   );
 
   // get this script tag
