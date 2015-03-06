@@ -12,15 +12,20 @@
 
 ;(function() {
 
+// store window reference
+var win = this;
+
+// download pym if not in global namespace
 if (!this.pym) {
   callAjax("http://datatools.urban.org/features/pym.js", function(text) {
     eval(text);
-    addIframe(pym);
+    addIframe.call(win, pym);
   });
 } else {
-  addIframe(pym);
+  addIframe.call(win, pym);
 }
 
+// add iframe for this visual
 function addIframe(pym) {
 
   // Select this script
@@ -58,6 +63,7 @@ function addIframe(pym) {
 
 }
 
+// download file
 function callAjax(url, callback){
     var xmlhttp;
     // compatible with IE7+, Firefox, Chrome, Opera, Safari
