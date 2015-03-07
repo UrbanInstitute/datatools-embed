@@ -52,6 +52,7 @@ function load(callback) {
     });
   } else {
     addIframe(pym);
+    callback();
   }
 }
 
