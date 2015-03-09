@@ -29,10 +29,10 @@ if (!win._URBAN_PYM_INJECTED) {
   win._URBAN_PYM_INJECTED = true;
 }
 
-// wait for document and pym
-document.addEventListener("DOMContentLoaded", function(event) {
-  document.addEventListener('pym-loaded', loadAllGraphics);
-});
+// wait for document and pym, both events
+// have same callback, which waits for both to have completed
+document.addEventListener("DOMContentLoaded", loadAllGraphics);
+document.addEventListener('pym-loaded', loadAllGraphics);
 
 // add loading function to queue
 queue.push(addIframe);
@@ -54,7 +54,9 @@ function trigger(event_name) {
 /*
   on document ready, recurse through callback queue
 */
+var events_remaining = 2;
 function loadAllGraphics() {
+  if (--events_remaining) return null;
   // check if we've already started loading the graphics
   var unloading = win._URBAN_EMBED_QUEUE_UNLOADING;
   // if unloading not yet started, begin
