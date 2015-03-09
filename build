@@ -4,3 +4,4 @@ DEPLOY=B:
 
 # smash pym + embed together
 uglifyjs embed.src.js --mangle --screw-ie8 --compress > ${DEPLOY}/embed.js
+uglifyjs pym.js --mangle --screw-ie8 --compress > ${DEPLOY}/pym.js
