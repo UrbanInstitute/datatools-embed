@@ -20,16 +20,11 @@ var queue = win._URBAN_EMBED_QUEUE = (
   win._URBAN_EMBED_QUEUE
 );
 
-var pym_loaded = false;
-
 if (!win._URBAN_PYM_INJECTED) {
   var script = document.createElement('script');
   script.type = 'text/javascript';
   script.src = 'http://datatools.urban.org/features/pym.js';
-  script.onload = function() {
-    pym_loaded = true;
-    trigger('pym-loaded');
-  };
+  script.onload = trigger.bind(trigger, 'pym-loaded');
   document.body.appendChild(script);
   win._URBAN_PYM_INJECTED = true;
 }
