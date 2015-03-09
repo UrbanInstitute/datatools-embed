@@ -2,6 +2,8 @@
 
 ## only one script tag needed!
 
+Works on browsers >= ie9
+
 #### Before:
 
 ```html
@@ -30,9 +32,10 @@ when you add an embed script tag (as above) to your page, `embed.js` adds a rend
 
 #### Warning!:
 
-This script relies on 3 global variables...
+This script relies on 4 global variables...
 ```javascript
 _URBAN_EMBED_COUNT
 _URBAN_EMBED_QUEUE
 _URBAN_EMBED_QUEUE_UNLOADING
+_URBAN_PYM_INJECTED
 ```
