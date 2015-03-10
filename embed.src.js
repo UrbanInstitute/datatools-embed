@@ -79,7 +79,7 @@ function addIframe(callback) {
   var urban_frame = document.createElement('div');
 
   // ad id to urban frame
-  urban_frame.id = "urban_frame_" + viz;
+  urban_frame.id = "urban-frame-" + viz.replace(/[\W_]+/g,"-");
 
   // insert div before script
   script.parentNode.insertBefore(urban_frame, script);
