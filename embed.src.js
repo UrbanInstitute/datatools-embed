@@ -24,38 +24,22 @@ if (!win._URBAN_PYM_INJECTED) {
   var script = document.createElement('script');
   script.type = 'text/javascript';
   script.src = 'http://datatools.urban.org/features/pym.js';
-  script.onload = trigger.bind(trigger, 'pym-loaded');
+  script.async = false;
+  script.onload = loadAllGraphics;
   document.body.appendChild(script);
   win._URBAN_PYM_INJECTED = true;
 }
 
-// wait for document and pym, both events
-// have same callback, which waits for both to have completed
 document.addEventListener("DOMContentLoaded", loadAllGraphics);
-document.addEventListener('pym-loaded', loadAllGraphics);
 
 // add loading function to queue
 queue.push(addIframe);
 
 /*
-  Trigger custom event
-*/
-function trigger(event_name) {
-  var event;
-  if (window.CustomEvent) {
-    event = new CustomEvent(event_name, {detail: {some: 'data'}});
-  } else {
-    event = document.createEvent('CustomEvent');
-    event.initCustomEvent(event_name, true, true, {some: 'data'});
-  }
-  document.dispatchEvent(event);
-}
-
-/*
   on document ready, recurse through callback queue
 */
 var events_remaining = 2;
-function loadAllGraphics() {
+function loadAllGraphics(event) {
   if (--events_remaining) return null;
   // check if we've already started loading the graphics
   var unloading = win._URBAN_EMBED_QUEUE_UNLOADING;
