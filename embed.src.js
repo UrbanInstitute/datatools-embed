@@ -20,7 +20,7 @@ var queue = win._URBAN_EMBED_QUEUE = (
   win._URBAN_EMBED_QUEUE
 );
 
-if (!win._URBAN_PYM_INJECTED) {
+if (!pym && !win._URBAN_PYM_INJECTED) {
   var script = document.createElement('script');
   script.type = 'text/javascript';
   script.src = 'http://datatools.urban.org/features/pym.js';
