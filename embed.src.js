@@ -20,7 +20,13 @@ var queue = win._URBAN_EMBED_QUEUE = (
   win._URBAN_EMBED_QUEUE
 );
 
-if (!win.pym && !win._URBAN_PYM_INJECTED) {
+// we need pym to be loaded and the document to be ready...
+var events_remaining = 2;
+
+if (win.pym && !win._URBAN_PYM_INJECTED) {
+  win._URBAN_PYM_INJECTED = true;
+  events_remaining = 1;
+} else if (!win.pym && !win._URBAN_PYM_INJECTED) {
   var script = document.createElement('script');
   script.type = 'text/javascript';
   script.src = 'http://datatools.urban.org/features/pym.js';
@@ -38,7 +44,6 @@ queue.push(addIframe);
 /*
   on document ready, recurse through callback queue
 */
-var events_remaining = 2;
 function loadAllGraphics(event) {
   if (--events_remaining) return null;
   // check if we've already started loading the graphics
