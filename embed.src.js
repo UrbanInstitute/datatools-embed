@@ -29,6 +29,9 @@ if (win.pym && !win._URBAN_PYM_INJECTED) {
 } else if (!win.pym && !win._URBAN_PYM_INJECTED) {
   var script = document.createElement('script');
   script.type = 'text/javascript';
+//URL WILL BE REPLACED BY:
+//    http://apps.urban.org/assets/js/urban/datatools-embed/pym.js
+// once it's built and installed...
   script.src = 'http://datatools.urban.org/features/pym.js';
   script.async = false;
   script.onload = loadAllGraphics;
@@ -39,7 +42,7 @@ if (win.pym && !win._URBAN_PYM_INJECTED) {
 document.addEventListener("DOMContentLoaded", loadAllGraphics);
 
 // add loading function to queue
-queue.push(addIframe);
+queue.push(addImage);
 
 /*
   on document ready, recurse through callback queue
@@ -59,12 +62,16 @@ function loadAllGraphics(event) {
   win._URBAN_EMBED_QUEUE_UNLOADING = true;
 }
 
-
 // add iframe for this visual
-function addIframe(callback) {
+function addImage(callback) {
+  //get IE version (or -1 for non IE browsers)
+  var ieVersion = getInternetExplorerVersion();
 
   // Select this script
   var scripts = document.querySelectorAll(
+//URL WILL BE REPLACED BY:
+//    http://apps.urban.org/assets/js/urban/datatools-embed/embed.js
+// once it's built and installed...
     'script[src="http://datatools.urban.org/features/embed.js"]'
   );
 
@@ -83,22 +90,53 @@ function addIframe(callback) {
   // create urban frame node
   var urban_frame = document.createElement('div');
 
-  // ad id to urban frame
-  urban_frame.id = "urban-frame-" + viz.replace(/[\W_]+/g,"-").toLowerCase();
+  if( ieVersion >= 9 || ieVersion == -1){
+    // ad id to urban frame
+    urban_frame.id = "urban-frame-" + viz.replace(/[\W_]+/g,"-").toLowerCase();
 
-  // insert div before script
-  script.parentNode.insertBefore(urban_frame, script);
+    // insert div before script
+    script.parentNode.insertBefore(urban_frame, script);
 
-  // add pymParent to global object
-  this['pymParent_' + urban_frame.id] = new pym.Parent(
-    urban_frame.id,
-    "http://datatools.urban.org/features/" + viz,
-    {}
-  );
+    // add pymParent to global object
+    this['pymParent_' + urban_frame.id] = new pym.Parent(
+      urban_frame.id,
+      viz,
+      {}
+    );
+  }
+
+  else{
+    urban_frame.id = "urban-frame-fallback" + viz.replace(/[\W_]+/g,"-").toLowerCase();
+    var fallback = document.createElement('img')
+
+    //remove *.html from end of path, if it is there, then look for fallback image in same directory as
+    //html (usually index.html), with name fallback.png
+    var lastPath = viz.split("/").pop()
+    var imgPath;
+    if(lastPath.search("html") != -1){ imgPath = viz.replace(lastPath, "") + "fallback.png" }
+    else{ imgPath = viz + "/fallback.png" }
+
+    //add the image to the urban_frame div
+    fallback.src = imgPath
+    urban_frame.appendChild(fallback)
+  }
 
   // call callback
   callback();
 }
 
+function getInternetExplorerVersion(){
+// Returns the version of Internet Explorer or a -1
+// (indicating the use of another browser).
+  var rv = -1; // Return value assumes failure.
+  if (navigator.appName == 'Microsoft Internet Explorer')
+  {
+    var ua = navigator.userAgent;
+    var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+    if (re.exec(ua) != null)
+      rv = parseFloat( RegExp.$1 );
+  }
+  return rv;
+}
 
 }).call(this, document, undefined);
