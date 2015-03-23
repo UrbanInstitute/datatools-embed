@@ -72,7 +72,7 @@ function addImage(callback) {
 //URL WILL BE REPLACED BY:
 //    http://apps.urban.org/assets/js/urban/datatools-embed/embed.js
 // once it's built and installed...
-    'script[src="http://datatools.urban.org/features/embed.js"]'
+    'script[src="http://apps-staging.urban.org/assets/js/urban/tmp/embed.js"]'
   );
 
   // increment global count of urban embeded
@@ -89,7 +89,7 @@ function addImage(callback) {
 
   // create urban frame node
   var urban_frame = document.createElement('div');
-
+  //use iframe for IE less than or equal to 8, or for non IE browsers
   if( ieVersion >= 9 || ieVersion == -1){
     // ad id to urban frame
     urban_frame.id = "urban-frame-" + viz.replace(/[\W_]+/g,"-").toLowerCase();
@@ -106,8 +106,9 @@ function addImage(callback) {
   }
 
   else{
-    urban_frame.id = "urban-frame-fallback" + viz.replace(/[\W_]+/g,"-").toLowerCase();
+    urban_frame.id = "urban-frame-fallback-" + viz.replace(/[\W_]+/g,"-").toLowerCase();
     var fallback = document.createElement('img')
+    fallback.className = "ie-fallback-image"
 
     //remove *.html from end of path, if it is there, then look for fallback image in same directory as
     //html (usually index.html), with name fallback.png
@@ -119,6 +120,7 @@ function addImage(callback) {
     //add the image to the urban_frame div
     fallback.src = imgPath
     urban_frame.appendChild(fallback)
+    script.parentNode.insertBefore(urban_frame, script);
   }
 
   // call callback

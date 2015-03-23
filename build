@@ -1,7 +1,8 @@
 #!/bin/bash
 
-DEPLOY=B:
+DEPLOY=/Users/bchartof/projects/datatools-embed
 
-# smash pym + embed together
+#smash pym + embed together
 uglifyjs embed.src.js --mangle --screw-ie8 --compress > ${DEPLOY}/embed.js
 uglifyjs pym.js --mangle --screw-ie8 --compress > ${DEPLOY}/pym.js
+scp -p -P 20022 embed.js bchartoff@192.188.252.160:/var/www/apps.urban.org/assets/js/urban/tmp
