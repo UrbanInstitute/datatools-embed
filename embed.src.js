@@ -13,6 +13,7 @@
 
 // store window reference
 var win = this;
+var is_old_IE = isOldIE();
 
 // iframe load queue
 var queue = win._URBAN_EMBED_QUEUE = (
@@ -26,7 +27,10 @@ var events_remaining = 2;
 if (win.pym && !win._URBAN_PYM_INJECTED) {
   win._URBAN_PYM_INJECTED = true;
   events_remaining = 1;
-} else if (!win.pym && !win._URBAN_PYM_INJECTED) {
+} else if (is_old_IE){
+  loadAllGraphics();
+}
+else if (!win.pym && !win._URBAN_PYM_INJECTED) {
   var script = document.createElement('script');
   script.type = 'text/javascript';
 //URL WILL BE REPLACED BY:
@@ -39,7 +43,8 @@ if (win.pym && !win._URBAN_PYM_INJECTED) {
   win._URBAN_PYM_INJECTED = true;
 }
 
-document.addEventListener("DOMContentLoaded", loadAllGraphics);
+if( !is_old_IE ){ document.addEventListener("DOMContentLoaded", loadAllGraphics); }
+else { document.attachEvent("onload", loadAllGraphics) }
 
 // add loading function to queue
 queue.push(addImage);
@@ -65,7 +70,6 @@ function loadAllGraphics(event) {
 // add iframe for this visual
 function addImage(callback) {
   //get IE version (or -1 for non IE browsers)
-  var ieVersion = getInternetExplorerVersion();
 
   // Select this script
   var scripts = document.querySelectorAll(
@@ -90,7 +94,7 @@ function addImage(callback) {
   // create urban frame node
   var urban_frame = document.createElement('div');
   //use iframe for IE less than or equal to 8, or for non IE browsers
-  if( ieVersion >= 9 || ieVersion == -1){
+  if( !is_old_IE ){
     // ad id to urban frame
     urban_frame.id = "urban-frame-" + viz.replace(/[\W_]+/g,"-").toLowerCase();
 
@@ -127,7 +131,7 @@ function addImage(callback) {
   callback();
 }
 
-function getInternetExplorerVersion(){
+function isOldIE(){
 // Returns the version of Internet Explorer or a -1
 // (indicating the use of another browser).
   var rv = -1; // Return value assumes failure.
@@ -138,7 +142,10 @@ function getInternetExplorerVersion(){
     if (re.exec(ua) != null)
       rv = parseFloat( RegExp.$1 );
   }
-  return rv;
+  if (rv != -1 && rv < 9){
+    return true
+  }
+  else{ return false}
 }
 
 }).call(this, document, undefined);
