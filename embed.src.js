@@ -28,7 +28,8 @@ if (win.pym && !win._URBAN_PYM_INJECTED) {
   win._URBAN_PYM_INJECTED = true;
   events_remaining = 1;
 } else if (is_old_IE){
-  loadAllGraphics();
+  win._URBAN_PYM_INJECTED = true;
+  events_remaining = 1;
 }
 else if (!win.pym && !win._URBAN_PYM_INJECTED) {
   var script = document.createElement('script');
@@ -44,7 +45,7 @@ else if (!win.pym && !win._URBAN_PYM_INJECTED) {
 }
 
 if( !is_old_IE ){ document.addEventListener("DOMContentLoaded", loadAllGraphics); }
-else { document.attachEvent("onload", loadAllGraphics) }
+else { window.attachEvent("onload", loadAllGraphics) }
 
 // add loading function to queue
 queue.push(addImage);
